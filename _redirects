@@ -1,0 +1,6 @@
+# Cloudflare Pages Redirects Configuration
+
+# 重定向常用路径的简写形式
+/chapters  /web/chapters.html  200
+/nav  /web/nav.html  200
+/viewer  /web/viewer.html  200
