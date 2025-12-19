@@ -130,7 +130,7 @@ git push -u origin main
 #### 步骤4：配置构建设置
 
 ```yaml
-项目名称: architect-learning
+项目名称: projectmanager-learning
 （或自定义名称，将成为默认域名的一部分）
 
 生产分支: main
@@ -170,7 +170,7 @@ git push -u origin main
 
 部署成功后，你会获得一个默认域名：
 ```
-https://architect-learning.pages.dev
+https://projectmanager-learning.pages.dev
 ```
 
 点击链接即可访问你的网站！
@@ -238,7 +238,7 @@ wrangler login
 
 ```bash
 # 在项目根目录执行
-wrangler pages deploy . --project-name=architect-learning
+wrangler pages deploy . --project-name=projectmanager-learning
 
 # 或使用配置文件（如果有 wrangler.toml）
 wrangler pages deploy .
@@ -255,7 +255,7 @@ wrangler pages deploy .
 ✨ Success! Uploaded 150 files (2.5 sec)
 
 ✨ Deployment complete! Take a peek over at
-   https://architect-learning.pages.dev
+   https://projectmanager-learning.pages.dev
 ```
 
 #### 后续更新
@@ -316,7 +316,7 @@ wrangler pages project list
 #### 步骤4：配置项目
 
 ```
-项目名称: architect-learning
+项目名称: projectmanager-learning
 ```
 
 #### 步骤5：部署
@@ -391,7 +391,7 @@ wrangler pages project list
 创建 `wrangler.toml` 文件用于 CLI 部署：
 
 ```toml
-name = "architect-learning"
+name = "projectmanager-learning"
 compatibility_date = "2024-01-01"
 
 [site]
@@ -439,7 +439,7 @@ Cloudflare 会提供 DNS 配置说明：
   ```
   类型: CNAME
   名称: www（或 @）
-  值: architect-learning.pages.dev
+  值: projectmanager-learning.pages.dev
   ```
 
 #### 步骤4：等待生效

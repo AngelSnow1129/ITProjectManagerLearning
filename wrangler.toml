@@ -1,6 +1,6 @@
 # Cloudflare Pages Wrangler Configuration
 # 用于通过 CLI 部署项目
 
-name = "architect-learning"
+name = "projectmanager-learning"
 compatibility_date = "2024-01-01"
 pages_build_output_dir = "."

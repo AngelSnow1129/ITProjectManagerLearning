@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>章节学习 - 系统架构设计师</title>
+    <title>章节学习 - 信息系统项目管理师</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
     <script src="marked-fallback.js"></script>
@@ -772,7 +772,7 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h1>📚 章节导航</h1>
-            <p id="exam-type-name">系统架构设计师</p>
+            <p id="exam-type-name">信息系统项目管理师</p>
             <a href="index.html" class="back-home">← 返回首页</a>
         </div>
 
@@ -803,7 +803,7 @@
         <div class="content-body">
             <div class="markdown-body" id="markdown-content">
                 <div class="loading">
-                    <h2>👋 欢迎使用系统架构设计师学习平台</h2>
+                    <h2>👋 欢迎使用信息系统项目管理师学习平台</h2>
                     <p>请从左侧选择要学习的章节</p>
                 </div>
             </div>
@@ -835,7 +835,7 @@
         }
 
         let currentView = 'normal';
-        let currentExamType = 'architect';
+        let currentExamType = 'projectmanager';
         let currentChapter = null;
         let currentMarkdown = '';
 
@@ -843,7 +843,7 @@
         window.onload = function() {
             // 从URL参数获取考试类型和视图
             const urlParams = new URLSearchParams(window.location.search);
-            currentExamType = urlParams.get('type') || 'architect';
+            currentExamType = urlParams.get('type') || 'projectmanager';
             currentView = urlParams.get('view') || 'normal';
 
             // 更新视图按钮状态
