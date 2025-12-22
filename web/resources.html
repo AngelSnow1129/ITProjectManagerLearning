@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习资源 - 信息系统项目管理师</title>
+    <script src="config.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .resource-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .section-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .folder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .folder-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .folder-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .folder-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .folder-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .folder-path {
+            font-size: 0.85em;
+            color: #999;
+            word-break: break-all;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .folder-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 学习资源中心</h1>
+            <p>案例分析 · 搜集资料 · 辅助学习</p>
+            <a href="index.html" class="back-btn">← 返回首页</a>
+        </div>
+
+        <div class="stats" id="stats">
+            <!-- 统计信息将通过JavaScript生成 -->
+        </div>
+
+        <div class="resource-section">
+            <h2 class="section-title">📝 案例分析专区</h2>
+            <p class="section-description">
+                包含历年案例分析真题、常见问题总结、答题技巧等内容，帮助您掌握案例分析的解题方法。
+            </p>
+            <div class="folder-grid" id="caseStudyGrid">
+                <!-- 案例分析文件夹将通过JavaScript生成 -->
+            </div>
+        </div>
+
+        <div class="resource-section">
+            <h2 class="section-title">📚 搜集资料专区</h2>
+            <p class="section-description">
+                精心搜集的学习资料，包括ITTO汇总、绩效域口诀、计算题公式、数据流图等重要参考资料。
+            </p>
+            <div class="folder-grid" id="resourcesGrid">
+                <!-- 搜集资料文件夹将通过JavaScript生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化
+        window.onload = function() {
+            loadResources();
+            loadStats();
+        };
+
+        // 加载资源
+        function loadResources() {
+            const config = CONFIG.examTypes.projectmanager;
+            
+            // 加载案例分析
+            const caseStudyGrid = document.getElementById('caseStudyGrid');
+            let caseHtml = '';
+            config.caseStudy.folders.forEach(folder => {
+                caseHtml += `
+                    <div class="folder-card" onclick="openFolder('${folder.path}', '${folder.name}')">
+                        <div class="folder-icon">📁</div>
+                        <div class="folder-name">${folder.name}</div>
+                        <div class="folder-path">${folder.path}</div>
+                    </div>
+                `;
+            });
+            caseStudyGrid.innerHTML = caseHtml;
+            
+            // 加载搜集资料
+            const resourcesGrid = document.getElementById('resourcesGrid');
+            let resourceHtml = '';
+            config.resources.folders.forEach(folder => {
+                resourceHtml += `
+                    <div class="folder-card" onclick="openFolder('${folder.path}', '${folder.name}')">
+                        <div class="folder-icon">📁</div>
+                        <div class="folder-name">${folder.name}</div>
+                        <div class="folder-path">${folder.path}</div>
+                    </div>
+                `;
+            });
+            resourcesGrid.innerHTML = resourceHtml;
+        }
+
+        // 加载统计信息
+        function loadStats() {
+            const config = CONFIG.examTypes.projectmanager;
+            const statsDiv = document.getElementById('stats');
+            
+            const caseCount = config.caseStudy.folders.length;
+            const resourceCount = config.resources.folders.length;
+            const totalCount = caseCount + resourceCount;
+            
+            statsDiv.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalCount}</div>
+                    <div class="stat-label">资源文件夹</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${caseCount}</div>
+                    <div class="stat-label">案例分析</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${resourceCount}</div>
+                    <div class="stat-label">搜集资料</div>
+                </div>
+            `;
+        }
+
+        // 打开文件夹
+        function openFolder(path, name) {
+            // 跳转到文件浏览器页面
+            window.location.href = `file-browser.html?path=${encodeURIComponent(path)}&name=${encodeURIComponent(name)}`;
+        }
+    </script>
+</body>
+</html>

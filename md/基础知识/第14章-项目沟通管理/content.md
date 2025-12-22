@@ -529,6 +529,3 @@ D.开展客户满意度调查
 
 【答案】A
 
-# Thank You!
-
-微信公众号：野人老师 淘宝店铺：yeren.taobao.com

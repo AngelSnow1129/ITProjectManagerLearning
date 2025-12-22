@@ -477,6 +477,3 @@ D.一致性、可用性、有效性
 
 【答案】A
 
-# Thank You!
-
-微信公众号：野人老师 淘宝店铺：yeren.taobao.com

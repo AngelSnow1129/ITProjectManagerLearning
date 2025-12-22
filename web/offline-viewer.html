@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>离线学习查看器 - 信息系统项目管理师</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+    <script src="marked-fallback.js"></script>
+    <script src="config.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 三栏布局 */
+        .category-sidebar {
+            width: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .category-header h1 {
+            font-size: 1.2em;
+        }
+
+        .category-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .category-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .category-item.active {
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .folder-sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .folder-header {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .folder-header h2 {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .folder-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .folder-item {
+            padding: 10px 12px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .folder-item:hover {
+            background: #e9ecef;
+            transform: translateX(3px);
+        }
+
+        .folder-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-header {
+            background: white;
+            padding: 15px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-title {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .content-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background: white;
+        }
+
+        .markdown-body {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            color: #999;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #f5576c;
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e0e0e0;
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* 返回顶部 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 1024px) {
+            .category-sidebar {
+                width: 150px;
+            }
+            
+            .folder-sidebar {
+                width: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .category-sidebar,
+            .folder-sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 1000;
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .category-sidebar.show,
+            .folder-sidebar.show {
+                transform: translateX(0);
+            }
+
+            .folder-sidebar.show {
+                left: 200px;
+            }
+
+            .mobile-toggle {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                width: 40px;
+                height: 40px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 1.2em;
+                z-index: 999;
+            }
+
+            .content-header {
+                padding-left: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 进度条 -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- 移动端菜单按钮 -->
+    <button class="mobile-toggle" onclick="toggleSidebar()" style="display: none;">☰</button>
+
+    <!-- 分类侧边栏 -->
+    <div class="category-sidebar" id="categorySidebar">
+        <div class="category-header">
+            <h1>📚 学习资源</h1>
+        </div>
+        <div class="category-list">
+            <div class="category-item active" data-category="case" onclick="switchCategory('case')">
+                📝 案例分析
+            </div>
+            <div class="category-item" data-category="resource" onclick="switchCategory('resource')">
+                📚 搜集资料
+            </div>
+            <div class="category-item" data-category="basic" onclick="switchCategory('basic')">
+                📖 基础知识
+            </div>
+        </div>
+        <div style="padding: 15px; border-top: 1px solid rgba(255, 255, 255, 0.2);">
+            <button class="action-btn" onclick="goHome()" style="width: 100%; background: rgba(255, 255, 255, 0.2);">
+                🏠 返回首页
+            </button>
+        </div>
+    </div>
+
+    <!-- 文件夹侧边栏 -->
+    <div class="folder-sidebar" id="folderSidebar">
+        <div class="folder-header">
+            <h2 id="categoryTitle">案例分析</h2>
+        </div>
+        <div class="folder-list" id="folderList">
+            <!-- 文件夹列表将通过JavaScript生成 -->
+        </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content-area">
+        <div class="content-header">
+            <div class="content-title" id="contentTitle">选择文件夹查看内容</div>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="window.print()">🖨️ 打印</button>
+                <button class="action-btn" onclick="downloadContent()">💾 保存</button>
+            </div>
+        </div>
+
+        <div class="content-body" id="contentBody">
+            <div class="markdown-body">
+                <div class="empty-state">
+                    <h2>👈 请从左侧选择内容查看</h2>
+                    <p style="margin-top: 15px;">支持案例分析、搜集资料、基础知识三大模块</p>
+                    <p style="margin-top: 10px; color: #667eea;">完全支持离线学习</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
+    <script>
+        let currentCategory = 'case';
+        let currentFolder = null;
+
+        // 初始化
+        window.onload = function() {
+            loadFolderList();
+            setupScrollListener();
+            
+            // 移动端适配
+            if (window.innerWidth <= 768) {
+                document.querySelector('.mobile-toggle').style.display = 'block';
+            }
+            
+            // 从URL参数加载
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            const folder = urlParams.get('folder');
+            
+            if (category) {
+                switchCategory(category);
+            }
+            
+            if (folder) {
+                // 延迟加载以确保文件夹列表已生成
+                setTimeout(() => {
+                    const folderIndex = parseInt(folder);
+                    if (!isNaN(folderIndex)) {
+                        loadFolderByIndex(folderIndex);
+                    }
+                }, 100);
+            }
+        };
+
+        // 切换分类
+        function switchCategory(category) {
+            currentCategory = category;
+            
+            // 更新分类标签状态
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.category === category) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // 更新标题
+            const titles = {
+                'case': '案例分析',
+                'resource': '搜集资料',
+                'basic': '基础知识'
+            };
+            document.getElementById('categoryTitle').textContent = titles[category];
+            
+            // 重新加载文件夹列表
+            loadFolderList();
+            
+            // 清空内容
+            resetContent();
+        }
+
+        // 加载文件夹列表
+        function loadFolderList() {
+            const listDiv = document.getElementById('folderList');
+            const config = CONFIG.examTypes.projectmanager;
+            
+            let html = '';
+            let folders = [];
+            
+            if (currentCategory === 'case') {
+                folders = config.caseStudy.folders;
+            } else if (currentCategory === 'resource') {
+                folders = config.resources.folders;
+            } else if (currentCategory === 'basic') {
+                folders = config.chapters.map(ch => ({
+                    name: `第${ch.id}章 ${ch.name}`,
+                    path: `md/基础知识/${ch.folder}`
+                }));
+            }
+            
+            folders.forEach((folder, index) => {
+                html += `
+                    <div class="folder-item" onclick="loadFolder(${index})">
+                        📁 ${folder.name}
+                    </div>
+                `;
+            });
+            
+            listDiv.innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">暂无内容</div>';
+        }
+
+        // 加载文件夹内容
+        async function loadFolder(index) {
+            const config = CONFIG.examTypes.projectmanager;
+            let folders = [];
+            
+            if (currentCategory === 'case') {
+                folders = config.caseStudy.folders;
+            } else if (currentCategory === 'resource') {
+                folders = config.resources.folders;
+            } else if (currentCategory === 'basic') {
+                folders = config.chapters.map(ch => ({
+                    name: `第${ch.id}章 ${ch.name}`,
+                    path: `md/基础知识/${ch.folder}`
+                }));
+            }
+            
+            if (index < 0 || index >= folders.length) return;
+            
+            const folder = folders[index];
+            currentFolder = folder;
+            
+            // 更新标题
+            document.getElementById('contentTitle').textContent = folder.name;
+            
+            // 更新活动状态
+            document.querySelectorAll('.folder-item').forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // 加载内容
+            const contentDiv = document.getElementById('contentBody');
+            contentDiv.innerHTML = '<div class="markdown-body"><div class="loading">加载中...</div></div>';
+            
+            try {
+                const filePath = `../${folder.path}/content.md`;
+                const response = await fetch(filePath);
+                
+                if (!response.ok) {
+                    throw new Error('文件未找到');
+                }
+                
+                const markdown = await response.text();
+                
+                // 等待marked库加载
+                await waitForMarked();
+                
+                const html = marked.parse(markdown);
+                contentDiv.innerHTML = `<div class="markdown-body">${html}</div>`;
+                
+                // 修复图片路径
+                fixImagePaths(folder.path);
+                
+                // 滚动到顶部
+                contentDiv.scrollTop = 0;
+                
+                // 关闭移动端侧边栏
+                if (window.innerWidth <= 768) {
+                    document.getElementById('categorySidebar').classList.remove('show');
+                    document.getElementById('folderSidebar').classList.remove('show');
+                }
+                
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <div class="markdown-body">
+                        <div class="error">
+                            <h2>😕 加载失败</h2>
+                            <p>${error.message}</p>
+                            <p style="color: #999; margin-top: 10px;">文件路径: ${folder.path}/content.md</p>
+                            <p style="color: #999; margin-top: 10px;">
+                                提示：请确保使用本地服务器访问，直接打开HTML文件可能无法加载资源
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 通过索引加载文件夹
+        function loadFolderByIndex(index) {
+            loadFolder(index);
+        }
+
+        // 修复图片路径
+        function fixImagePaths(folderPath) {
+            const images = document.querySelectorAll('.markdown-body img');
+            images.forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('images/')) {
+                    img.src = `../${folderPath}/${src}`;
+                }
+                
+                // 添加点击查看大图
+                img.style.cursor = 'pointer';
+                img.onclick = function() {
+                    window.open(this.src, '_blank');
+                };
+            });
+        }
+
+        // 等待marked库加载
+        function waitForMarked() {
+            return new Promise((resolve) => {
+                if (typeof marked !== 'undefined') {
+                    resolve();
+                } else {
+                    const checkInterval = setInterval(() => {
+                        if (typeof marked !== 'undefined') {
+                            clearInterval(checkInterval);
+                            resolve();
+                        }
+                    }, 100);
+                }
+            });
+        }
+
+        // 设置滚动监听
+        function setupScrollListener() {
+            const contentBody = document.getElementById('contentBody');
+            const backToTop = document.getElementById('backToTop');
+            const progressFill = document.getElementById('progressFill');
+            
+            contentBody.addEventListener('scroll', function() {
+                // 显示/隐藏返回顶部按钮
+                if (contentBody.scrollTop > 300) {
+                    backToTop.classList.add('show');
+                } else {
+                    backToTop.classList.remove('show');
+                }
+                
+                // 更新进度条
+                const scrollPercent = (contentBody.scrollTop / (contentBody.scrollHeight - contentBody.clientHeight)) * 100;
+                progressFill.style.width = scrollPercent + '%';
+            });
+        }
+
+        // 滚动到顶部
+        function scrollToTop() {
+            document.getElementById('contentBody').scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 切换侧边栏
+        function toggleSidebar() {
+            document.getElementById('categorySidebar').classList.toggle('show');
+            document.getElementById('folderSidebar').classList.toggle('show');
+        }
+
+        // 重置内容
+        function resetContent() {
+            document.getElementById('contentTitle').textContent = '选择文件夹查看内容';
+            document.getElementById('contentBody').innerHTML = `
+                <div class="markdown-body">
+                    <div class="empty-state">
+                        <h2>👈 请从左侧选择内容查看</h2>
+                        <p style="margin-top: 15px;">支持案例分析、搜集资料、基础知识三大模块</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 下载内容
+        function downloadContent() {
+            if (!currentFolder) {
+                alert('请先选择一个文件夹');
+                return;
+            }
+            
+            const content = document.querySelector('.markdown-body').innerHTML;
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentFolder.name}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 返回首页
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

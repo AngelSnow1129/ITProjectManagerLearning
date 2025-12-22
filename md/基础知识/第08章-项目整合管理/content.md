@@ -949,6 +949,3 @@ D.CCB也可以审查配置管理活动，应明确规定CCB的角色和职责
 
 【答案】C
 
-# Thank You!
-
-微信公众号：野人老师 淘宝店铺：yeren.taobao.com

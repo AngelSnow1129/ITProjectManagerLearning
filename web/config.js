@@ -11,178 +11,197 @@ const CONFIG = {
                     id: '01', 
                     name: '信息化发展', 
                     stars: 4,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第01章-信息化发展'
                 },
                 { 
                     id: '02', 
                     name: '信息技术发展', 
                     stars: 4,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第02章-信息技术发展'
                 },
                 { 
                     id: '03', 
                     name: '信息系统治理', 
                     stars: 3,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第03章-信息系统治理'
                 },
                 { 
                     id: '04', 
                     name: '信息系统管理', 
                     stars: 3,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第04章-信息系统管理'
                 },
                 { 
                     id: '05', 
                     name: '信息系统工程', 
                     stars: 4,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第05章-信息系统工程'
                 },
                 { 
                     id: '06', 
-                    name: '项目管理概论', 
+                    name: '项目管理概述', 
                     stars: 5,
-                    hasKeypoint: true,
-                    hasMustKnow: true
+                    hasContent: true,
+                    folder: '第06章-项目管理概述'
                 },
                 { 
                     id: '07', 
                     name: '项目立项管理', 
                     stars: 4,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第07章-项目立项管理'
                 },
                 { 
                     id: '08', 
                     name: '项目整合管理', 
                     stars: 5,
-                    hasKeypoint: true,
-                    hasMustKnow: true
+                    hasContent: true,
+                    folder: '第08章-项目整合管理'
                 },
                 { 
                     id: '09', 
                     name: '项目范围管理', 
                     stars: 5,
-                    hasKeypoint: true,
-                    hasMustKnow: true
+                    hasContent: true,
+                    folder: '第09章-项目范围管理'
                 },
                 { 
                     id: '10', 
                     name: '项目进度管理', 
                     stars: 5,
-                    hasKeypoint: true,
-                    hasMustKnow: true
+                    hasContent: true,
+                    folder: '第10章-项目进度管理'
                 },
                 { 
                     id: '11', 
                     name: '项目成本管理', 
                     stars: 5,
-                    hasKeypoint: true,
-                    hasMustKnow: true
+                    hasContent: true,
+                    folder: '第11章-项目成本管理'
                 },
                 { 
                     id: '12', 
                     name: '项目质量管理', 
                     stars: 5,
-                    hasKeypoint: true,
-                    hasMustKnow: true
+                    hasContent: true,
+                    folder: '第12章-项目质量管理'
                 },
                 { 
                     id: '13', 
                     name: '项目资源管理', 
                     stars: 4,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第13章-项目资源管理'
                 },
                 { 
                     id: '14', 
                     name: '项目沟通管理', 
                     stars: 4,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第14章-项目沟通管理'
                 },
                 { 
                     id: '15', 
                     name: '项目风险管理', 
                     stars: 5,
-                    hasKeypoint: true,
-                    hasMustKnow: true
+                    hasContent: true,
+                    folder: '第15章-项目风险管理'
                 },
                 { 
                     id: '16', 
                     name: '项目采购管理', 
                     stars: 4,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第16章-项目采购管理'
                 },
                 { 
                     id: '17', 
                     name: '项目干系人管理', 
                     stars: 4,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第17章-项目干系人管理'
                 },
                 { 
                     id: '18', 
                     name: '项目绩效域', 
                     stars: 4,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第18章-项目绩效域'
                 },
                 { 
                     id: '19', 
                     name: '配置与变更管理', 
                     stars: 4,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第19章-配置与变更管理'
                 },
                 { 
                     id: '20', 
                     name: '高级项目管理', 
                     stars: 3,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第20章-高级项目管理'
                 },
                 { 
                     id: '21', 
                     name: '项目管理科学基础', 
                     stars: 3,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第21章-项目管理科学基础'
                 },
                 { 
                     id: '22', 
                     name: '组织通用治理', 
                     stars: 3,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第22章-组织通用治理'
                 },
                 { 
                     id: '23', 
-                    name: '法律法规与标准规范', 
+                    name: '组织通用管理', 
                     stars: 3,
-                    hasKeypoint: true,
-                    hasMustKnow: false
+                    hasContent: true,
+                    folder: '第23章-组织通用管理'
                 },
                 { 
                     id: '24', 
-                    name: '项目管理案例分析', 
-                    stars: 5,
-                    hasKeypoint: true,
-                    hasMustKnow: true
-                },
-                { 
-                    id: '25', 
-                    name: '论文写作指导', 
-                    stars: 5,
-                    hasKeypoint: true,
-                    hasMustKnow: true
+                    name: '法律法规与标准规范', 
+                    stars: 3,
+                    hasContent: true,
+                    folder: '第24章-法律法规与标准规范'
                 }
-            ]
+            ],
+            // 案例分析资源
+            caseStudy: {
+                name: '案例分析',
+                folders: [
+                    { name: '案例76个问题小结', path: 'md/案例分析/案例76个问题小结' },
+                    { name: '案例分析常见找错问题1', path: 'md/案例分析/案例分析常见找错问题1' },
+                    { name: '案例分析常见找错问题2', path: 'md/案例分析/案例分析常见找错问题2' },
+                    { name: '案例分析理论题必背内容', path: 'md/案例分析/案例分析理论题必背内容' },
+                    { name: '案例分析问答题', path: 'md/案例分析/案例分析问答题' },
+                    { name: '考前案例分析必做27题-2023年11月', path: 'md/案例分析/考前案例分析必做27题-2023年11月' },
+                    { name: '考前案例分析必做27题-2024年5月', path: 'md/案例分析/考前案例分析必做27题-2024年5月' }
+                ]
+            },
+            // 搜集资料
+            resources: {
+                name: '搜集资料',
+                folders: [
+                    { name: '10大管理49过程定义作用与ITTO', path: 'md/搜集资料/10大管理49过程定义作用与ITTO' },
+                    { name: '10大管理输入输出工具与技术', path: 'md/搜集资料/10大管理输入输出工具与技术' },
+                    { name: '10大管理输入输出工具与技术-第4版教材', path: 'md/搜集资料/10大管理输入输出工具与技术-第4版教材' },
+                    { name: '8大绩效域助记口诀', path: 'md/搜集资料/8大绩效域助记口诀' },
+                    { name: '八大绩效域绩效目标与要点思路理解', path: 'md/搜集资料/八大绩效域绩效目标与要点思路理解' },
+                    { name: '计算题公式汇总', path: 'md/搜集资料/计算题公式汇总' },
+                    { name: '十大管理数据流图汇总', path: 'md/搜集资料/十大管理数据流图汇总' }
+                ]
+            }
         }
     },
 
@@ -191,27 +210,18 @@ const CONFIG = {
         normal: {
             name: '完整章节',
             icon: '📖',
-            folder: '',
-            suffix: ''
+            description: '系统学习完整内容'
         },
-        keypoint: {
-            name: '重点提纲',
-            icon: '⭐',
-            folder: 'keypoint',
-            suffix: '_知识提纲'
+        case: {
+            name: '案例分析',
+            icon: '📝',
+            description: '案例分析专项练习'
         },
-        mustknow: {
-            name: '必背内容',
-            icon: '🎯',
-            folder: 'keypoint',
-            suffix: '_必背补充'
+        resource: {
+            name: '搜集资料',
+            icon: '📚',
+            description: '辅助学习资料'
         }
-    },
-
-    // 特殊文件映射（处理文件名不一致的情况）
-    fileMapping: {
-        keypoint: {},
-        mustknow: {}
     }
 };
 

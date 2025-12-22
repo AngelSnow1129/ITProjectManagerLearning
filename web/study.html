@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>章节学习 - 信息系统项目管理师</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+    <script src="marked-fallback.js"></script>
+    <script src="config.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 320px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .view-tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .view-tab {
+            flex: 1;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .view-tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .view-tab.active {
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .search-box {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .chapter-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .chapter-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chapter-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .chapter-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .chapter-name {
+            flex: 1;
+        }
+
+        .chapter-stars {
+            color: #ffc107;
+            font-size: 0.9em;
+        }
+
+        .chapter-item.active .chapter-stars {
+            color: #fff;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-header {
+            background: white;
+            padding: 15px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-title {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .content-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .content-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background: white;
+        }
+
+        .markdown-body {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e0e0e0;
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
+        /* 移动端适配 */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            z-index: 1001;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 1000;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .content-header {
+                padding-left: 70px;
+            }
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #f5576c;
+        }
+
+        /* 学习进度标记 */
+        .chapter-item.completed::before {
+            content: '✓';
+            margin-right: 8px;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .chapter-item.active.completed::before {
+            color: white;
+        }
+
+        /* 资源文件夹列表 */
+        .folder-list {
+            padding: 10px;
+        }
+
+        .folder-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .folder-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .folder-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* 文件列表 */
+        .file-list {
+            padding: 10px;
+        }
+
+        .file-item {
+            padding: 10px 15px;
+            margin-bottom: 3px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .file-item:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+
+        .file-item.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <!-- 进度条 -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- 移动端菜单按钮 -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+
+    <!-- 侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>📚 章节学习</h1>
+            <div class="view-tabs">
+                <button class="view-tab active" data-view="normal" onclick="switchView('normal')">📖 基础</button>
+                <button class="view-tab" data-view="case" onclick="switchView('case')">📝 案例</button>
+                <button class="view-tab" data-view="resource" onclick="switchView('resource')">📚 资料</button>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="搜索章节..." onkeyup="searchChapters(this.value)">
+        </div>
+
+        <div class="chapter-list" id="chapterList">
+            <!-- 章节列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <div class="content-header">
+            <div class="content-title" id="contentTitle">选择章节开始学习</div>
+            <div class="content-actions">
+                <button class="action-btn" onclick="markAsCompleted()">✓ 标记完成</button>
+                <button class="action-btn" onclick="window.print()">🖨️ 打印</button>
+                <button class="action-btn" onclick="goHome()">🏠 首页</button>
+            </div>
+        </div>
+
+        <div class="content-body" id="contentBody">
+            <div class="markdown-body">
+                <div style="text-align: center; padding: 100px 20px; color: #999;">
+                    <h2>👈 请从左侧选择章节开始学习</h2>
+                    <p style="margin-top: 20px;">支持三种学习模式：基础知识、案例分析、搜集资料</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
+    <script>
+        let currentView = 'normal';
+        let currentChapter = null;
+        let completedChapters = JSON.parse(localStorage.getItem('completedChapters') || '[]');
+
+        // 初始化
+        window.onload = function() {
+            loadChapterList();
+            setupScrollListener();
+            
+            // 从URL参数加载章节
+            const urlParams = new URLSearchParams(window.location.search);
+            const chapterId = urlParams.get('chapter');
+            const view = urlParams.get('view') || 'normal';
+            
+            if (view) {
+                switchView(view);
+            }
+            
+            if (chapterId) {
+                loadChapter(chapterId);
+            }
+        };
+
+        // 加载章节列表
+        function loadChapterList() {
+            const listDiv = document.getElementById('chapterList');
+            const config = CONFIG.examTypes.projectmanager;
+            
+            if (currentView === 'normal') {
+                // 基础知识章节
+                let html = '';
+                config.chapters.forEach(chapter => {
+                    const stars = '⭐'.repeat(chapter.stars);
+                    const completed = completedChapters.includes(chapter.id) ? 'completed' : '';
+                    html += `
+                        <div class="chapter-item ${completed}" onclick="loadChapter('${chapter.id}')">
+                            <div class="chapter-name">${chapter.id}. ${chapter.name}</div>
+                            <div class="chapter-stars">${stars}</div>
+                        </div>
+                    `;
+                });
+                listDiv.innerHTML = html;
+            } else if (currentView === 'case') {
+                // 案例分析
+                let html = '';
+                config.caseStudy.folders.forEach(folder => {
+                    html += `
+                        <div class="folder-item" onclick="loadFolder('${folder.path}', '${folder.name}')">
+                            📁 ${folder.name}
+                        </div>
+                    `;
+                });
+                listDiv.innerHTML = html;
+            } else if (currentView === 'resource') {
+                // 搜集资料
+                let html = '';
+                config.resources.folders.forEach(folder => {
+                    html += `
+                        <div class="folder-item" onclick="loadFolder('${folder.path}', '${folder.name}')">
+                            📁 ${folder.name}
+                        </div>
+                    `;
+                });
+                listDiv.innerHTML = html;
+            }
+        }
+
+        // 切换视图
+        function switchView(view) {
+            currentView = view;
+            
+            // 更新标签状态
+            document.querySelectorAll('.view-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.view === view) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // 重新加载列表
+            loadChapterList();
+            
+            // 清空内容
+            document.getElementById('contentTitle').textContent = '选择内容开始学习';
+            document.getElementById('contentBody').innerHTML = `
+                <div class="markdown-body">
+                    <div style="text-align: center; padding: 100px 20px; color: #999;">
+                        <h2>👈 请从左侧选择内容开始学习</h2>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 加载章节内容
+        async function loadChapter(chapterId) {
+            currentChapter = chapterId;
+            const config = CONFIG.examTypes.projectmanager;
+            const chapter = config.chapters.find(c => c.id === chapterId);
+            
+            if (!chapter) return;
+            
+            // 更新标题
+            document.getElementById('contentTitle').textContent = `第${chapter.id}章 - ${chapter.name}`;
+            
+            // 更新活动状态
+            document.querySelectorAll('.chapter-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.chapter-item').classList.add('active');
+            
+            // 加载内容
+            const contentDiv = document.getElementById('contentBody');
+            contentDiv.innerHTML = '<div class="markdown-body"><div class="loading">加载中...</div></div>';
+            
+            try {
+                const filePath = `../md/基础知识/${chapter.folder}/content.md`;
+                const response = await fetch(filePath);
+                
+                if (!response.ok) {
+                    throw new Error('文件未找到');
+                }
+                
+                const markdown = await response.text();
+                
+                // 等待marked库加载
+                await waitForMarked();
+                
+                const html = marked.parse(markdown);
+                contentDiv.innerHTML = `<div class="markdown-body">${html}</div>`;
+                
+                // 修复图片路径
+                fixImagePaths(chapter.folder);
+                
+                // 滚动到顶部
+                contentDiv.scrollTop = 0;
+                
+                // 关闭移动端侧边栏
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('show');
+                }
+                
+            } catch (error) {
+                // 检测是否是 CORS 错误
+                const isCorsError = error.message.includes('Failed to fetch') || 
+                                   error.message.includes('NetworkError') ||
+                                   window.location.protocol === 'file:';
+                
+                if (isCorsError) {
+                    contentDiv.innerHTML = `
+                        <div class="markdown-body">
+                            <div class="error">
+                                <h2>⚠️ 需要启动本地服务器</h2>
+                                <p style="color: #666; margin: 20px 0;">
+                                    由于浏览器安全限制，直接打开 HTML 文件无法加载学习内容。
+                                </p>
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: left; max-width: 600px; margin: 20px auto;">
+                                    <h3 style="color: #333; margin-bottom: 15px;">📝 解决方法：</h3>
+                                    <p style="margin: 10px 0;"><strong>Windows 用户：</strong></p>
+                                    <p style="background: white; padding: 10px; border-radius: 5px; font-family: monospace;">
+                                        双击运行项目根目录的 <strong>start_server.bat</strong>
+                                    </p>
+                                    <p style="margin: 15px 0 10px;"><strong>Mac/Linux 用户：</strong></p>
+                                    <p style="background: white; padding: 10px; border-radius: 5px; font-family: monospace;">
+                                        在终端运行：<strong>./start_server.sh</strong>
+                                    </p>
+                                    <p style="margin: 15px 0 10px;"><strong>或使用 Python：</strong></p>
+                                    <p style="background: white; padding: 10px; border-radius: 5px; font-family: monospace;">
+                                        python -m http.server 8000
+                                    </p>
+                                    <p style="margin: 15px 0 0; color: #667eea;">
+                                        然后访问：<strong>http://localhost:8000/web/study.html</strong>
+                                    </p>
+                                </div>
+                                <p style="margin-top: 20px; color: #999; font-size: 0.9em;">
+                                    详细说明请查看项目根目录的 <strong>docs/离线学习指南.md</strong>
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    contentDiv.innerHTML = `
+                        <div class="markdown-body">
+                            <div class="error">
+                                <h2>😕 加载失败</h2>
+                                <p>${error.message}</p>
+                                <p style="color: #999; margin-top: 10px;">文件路径: ${filePath}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // 加载文件夹内容
+        async function loadFolder(folderPath, folderName) {
+            document.getElementById('contentTitle').textContent = folderName;
+            
+            // 更新活动状态
+            document.querySelectorAll('.folder-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const contentDiv = document.getElementById('contentBody');
+            contentDiv.innerHTML = '<div class="markdown-body"><div class="loading">加载中...</div></div>';
+            
+            try {
+                // 尝试加载content.md文件
+                const filePath = `../${folderPath}/content.md`;
+                const response = await fetch(filePath);
+                
+                if (!response.ok) {
+                    throw new Error('文件未找到');
+                }
+                
+                const markdown = await response.text();
+                
+                // 等待marked库加载
+                await waitForMarked();
+                
+                const html = marked.parse(markdown);
+                contentDiv.innerHTML = `<div class="markdown-body">${html}</div>`;
+                
+                // 修复图片路径
+                fixFolderImagePaths(folderPath);
+                
+                // 滚动到顶部
+                contentDiv.scrollTop = 0;
+                
+                // 关闭移动端侧边栏
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('show');
+                }
+                
+            } catch (error) {
+                // 检测是否是 CORS 错误
+                const isCorsError = error.message.includes('Failed to fetch') || 
+                                   error.message.includes('NetworkError') ||
+                                   window.location.protocol === 'file:';
+                
+                if (isCorsError) {
+                    contentDiv.innerHTML = `
+                        <div class="markdown-body">
+                            <div class="error">
+                                <h2>⚠️ 需要启动本地服务器</h2>
+                                <p style="color: #666; margin: 20px 0;">
+                                    由于浏览器安全限制，直接打开 HTML 文件无法加载学习内容。
+                                </p>
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: left; max-width: 600px; margin: 20px auto;">
+                                    <h3 style="color: #333; margin-bottom: 15px;">📝 解决方法：</h3>
+                                    <p style="margin: 10px 0;"><strong>Windows 用户：</strong></p>
+                                    <p style="background: white; padding: 10px; border-radius: 5px; font-family: monospace;">
+                                        双击运行项目根目录的 <strong>start_server.bat</strong>
+                                    </p>
+                                    <p style="margin: 15px 0 10px;"><strong>Mac/Linux 用户：</strong></p>
+                                    <p style="background: white; padding: 10px; border-radius: 5px; font-family: monospace;">
+                                        在终端运行：<strong>./start_server.sh</strong>
+                                    </p>
+                                    <p style="margin: 15px 0 10px;"><strong>或使用 Python：</strong></p>
+                                    <p style="background: white; padding: 10px; border-radius: 5px; font-family: monospace;">
+                                        python -m http.server 8000
+                                    </p>
+                                    <p style="margin: 15px 0 0; color: #667eea;">
+                                        然后访问：<strong>http://localhost:8000/web/study.html</strong>
+                                    </p>
+                                </div>
+                                <p style="margin-top: 20px; color: #999; font-size: 0.9em;">
+                                    详细说明请查看项目根目录的 <strong>docs/离线学习指南.md</strong>
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    contentDiv.innerHTML = `
+                        <div class="markdown-body">
+                            <div class="error">
+                                <h2>😕 加载失败</h2>
+                                <p>${error.message}</p>
+                                <p style="color: #999; margin-top: 10px;">文件路径: ${folderPath}/content.md</p>
+                                <p style="color: #999; margin-top: 10px;">
+                                    提示：请确保文件夹中存在 content.md 文件
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        // 修复文件夹图片路径
+        function fixFolderImagePaths(folderPath) {
+            const images = document.querySelectorAll('.markdown-body img');
+            images.forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('images/')) {
+                    img.src = `../${folderPath}/${src}`;
+                }
+                
+                // 添加点击查看大图
+                img.style.cursor = 'pointer';
+                img.onclick = function() {
+                    window.open(this.src, '_blank');
+                };
+            });
+        }
+
+        // 搜索章节
+        function searchChapters(keyword) {
+            const items = document.querySelectorAll('.chapter-item, .folder-item');
+            keyword = keyword.toLowerCase();
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(keyword)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // 标记为已完成
+        function markAsCompleted() {
+            if (!currentChapter) {
+                alert('请先选择一个章节');
+                return;
+            }
+            
+            if (!completedChapters.includes(currentChapter)) {
+                completedChapters.push(currentChapter);
+                localStorage.setItem('completedChapters', JSON.stringify(completedChapters));
+                loadChapterList();
+                alert('已标记为完成！');
+            } else {
+                alert('该章节已经标记为完成');
+            }
+        }
+
+        // 修复图片路径
+        function fixImagePaths(chapterFolder) {
+            const images = document.querySelectorAll('.markdown-body img');
+            images.forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('images/')) {
+                    img.src = `../md/基础知识/${chapterFolder}/${src}`;
+                }
+                
+                // 添加点击查看大图
+                img.style.cursor = 'pointer';
+                img.onclick = function() {
+                    window.open(this.src, '_blank');
+                };
+            });
+        }
+
+        // 等待marked库加载
+        function waitForMarked() {
+            return new Promise((resolve) => {
+                if (typeof marked !== 'undefined') {
+                    resolve();
+                } else {
+                    const checkInterval = setInterval(() => {
+                        if (typeof marked !== 'undefined') {
+                            clearInterval(checkInterval);
+                            resolve();
+                        }
+                    }, 100);
+                }
+            });
+        }
+
+        // 设置滚动监听
+        function setupScrollListener() {
+            const contentBody = document.getElementById('contentBody');
+            const backToTop = document.getElementById('backToTop');
+            const progressFill = document.getElementById('progressFill');
+            
+            contentBody.addEventListener('scroll', function() {
+                // 显示/隐藏返回顶部按钮
+                if (contentBody.scrollTop > 300) {
+                    backToTop.classList.add('show');
+                } else {
+                    backToTop.classList.remove('show');
+                }
+                
+                // 更新进度条
+                const scrollPercent = (contentBody.scrollTop / (contentBody.scrollHeight - contentBody.clientHeight)) * 100;
+                progressFill.style.width = scrollPercent + '%';
+            });
+        }
+
+        // 滚动到顶部
+        function scrollToTop() {
+            document.getElementById('contentBody').scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 切换侧边栏
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+        }
+
+        // 返回首页
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

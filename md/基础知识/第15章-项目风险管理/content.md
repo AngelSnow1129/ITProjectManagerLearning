@@ -923,6 +923,3 @@ D.风险数据质量
 
 【答案】C
 
-# Thank You!
-
-微信公众号：野人老师 淘宝店铺：yeren.taobao.com
