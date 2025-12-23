@@ -1,0 +1,197 @@
+# -*- coding: utf-8 -*-
+content = """<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速导航 - 信息系统项目管理师学习平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .nav-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .nav-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .nav-desc {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script src="statistics.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>��� 信息系统项目管理师学习平台</h1>
+            <p>快速导航 - 选择您需要的功能</p>
+        </div>
+
+        <div class="nav-grid">
+            <a href="index.html" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">主页</div>
+                <div class="nav-desc">返回主页，查看平台介绍和功能特性</div>
+            </a>
+
+            <a href="chapters.html?type=projectmanager" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">完整章节</div>
+                <div class="nav-desc">查看完整的教材内容，系统学习</div>
+            </a>
+
+            <a href="chapters.html?type=projectmanager&view=keypoint" class="nav-card">
+                <div class="nav-icon">⭐</div>
+                <div class="nav-title">重点提纲</div>
+                <div class="nav-desc">精心整理的重难点知识，高效复习</div>
+            </a>
+
+            <a href="chapters.html?type=projectmanager&view=mustknow" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">必背内容</div>
+                <div class="nav-desc">核心公式和概念，考前冲刺</div>
+            </a>
+
+            <a href="viewer.html?file=../keypoint/���必背内容总索引.md" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">必背索引</div>
+                <div class="nav-desc">所有必背内容的快速索引</div>
+            </a>
+
+            <a href="viewer.html?file=../keypoint/常用公式速查表.md" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">公式速查</div>
+                <div class="nav-desc">常用公式和算法快速查询</div>
+            </a>
+
+            <a href="viewer.html?file=../keypoint/快速查询索引.md" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">快速查询</div>
+                <div class="nav-desc">知识点快速查询索引</div>
+            </a>
+
+            <a href="viewer.html?file=../keypoint/学习进度跟踪表.md" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">学习进度</div>
+                <div class="nav-desc">跟踪和管理学习进度</div>
+            </a>
+
+            <a href="viewer.html?file=../docs/快速开始.md" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">快速开始</div>
+                <div class="nav-desc">新手入门指南</div>
+            </a>
+
+            <a href="viewer.html?file=../docs/信息系统项目管理师考试说明.md" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">考试说明</div>
+                <div class="nav-desc">详细的考试信息和备考建议</div>
+            </a>
+
+            <a href="viewer.html?file=../docs/问题排查指南.md" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">问题排查</div>
+                <div class="nav-desc">常见问题解决方案</div>
+            </a>
+
+            <a href="viewer.html?file=../README.md" class="nav-card">
+                <div class="nav-icon">���</div>
+                <div class="nav-title">项目说明</div>
+                <div class="nav-desc">项目功能和技术文档</div>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>© <span class="copyright-year">2024</span> 信息系统项目管理师学习平台 | 祝您考试顺利！���</p>
+            <div id="visit-stats" style="margin-top: 15px; display: flex; justify-content: center;"></div>
+        </div>
+    </div>
+</body>
+</html>"""
+
+with open('web/nav.html', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print('✅ nav.html 已使用 UTF-8 编码重新创建')
