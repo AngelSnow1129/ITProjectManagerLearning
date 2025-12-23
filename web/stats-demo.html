@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>访问统计演示 - 信息系统项目管理师</title>
+    <script src="statistics.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .stats-display {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .hot {
+            color: #ff6b6b;
+        }
+
+        .attention {
+            color: #4ecdc4;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .btn-refresh {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-refresh:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-home {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: white;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .info {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .info h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .info ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 访问统计演示</h1>
+
+        <div class="stats-display">
+            <div class="stat-item">
+                <div class="stat-label">
+                    <span class="stat-icon">🔥</span>
+                    <span>热度（总访问量）</span>
+                </div>
+                <div class="stat-value hot" id="total-visits">0</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-label">
+                    <span class="stat-icon">👁️</span>
+                    <span>关注度（唯一访客）</span>
+                </div>
+                <div class="stat-value attention" id="unique-visits">0</div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn-refresh" onclick="refreshStats()">🔄 刷新统计</button>
+            <button class="btn-reset" onclick="resetStats()">🗑️ 重置数据</button>
+            <button class="btn-home" onclick="location.href='index.html'">🏠 返回首页</button>
+        </div>
+
+        <div class="info">
+            <h3>💡 功能说明</h3>
+            <ul>
+                <li><strong>热度</strong>：记录所有访问次数，每次刷新页面都会增加</li>
+                <li><strong>关注度</strong>：基于浏览器指纹识别唯一访客，同一设备只计数一次</li>
+                <li>数据存储在浏览器本地，清除浏览器数据会重置统计</li>
+                <li>每个浏览器会话只计数一次，关闭浏览器后重新打开会再次计数</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>© <span class="copyright-year">2024</span> 信息系统项目管理师学习平台</p>
+        </div>
+    </div>
+
+    <script>
+        async function refreshStats() {
+            // 清除会话标记以允许重新计数
+            sessionStorage.removeItem('current_session_counted');
+            
+            const stats = await visitStats.recordVisit();
+            updateDisplay(stats);
+        }
+
+        function updateDisplay(stats) {
+            document.getElementById('total-visits').textContent = visitStats.formatNumber(stats.totalVisits);
+            document.getElementById('unique-visits').textContent = visitStats.formatNumber(stats.uniqueVisits);
+        }
+
+        function resetStats() {
+            if (confirm('确定要重置所有统计数据吗？此操作不可恢复！')) {
+                visitStats.resetStats();
+                updateDisplay({ totalVisits: 0, uniqueVisits: 0 });
+                alert('统计数据已重置！');
+            }
+        }
+
+        // 页面加载时显示统计
+        window.addEventListener('DOMContentLoaded', async () => {
+            const stats = await visitStats.recordVisit();
+            updateDisplay(stats);
+        });
+    </script>
+</body>
+</html>
