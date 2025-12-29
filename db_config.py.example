@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+数据库配置文件模板
+使用方法：复制此文件为 db_config.py 并填写实际配置
+"""
+
+DB_CONFIG = {
+    'host': 'your_host',
+    'port': 3306,
+    'user': 'your_username',
+    'password': 'your_password',  # 请填写数据库密码
+    'database': 'your_database',
+    'charset': 'utf8mb4'
+}
