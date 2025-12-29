@@ -531,8 +531,11 @@
             // 更新活动状态
             document.querySelectorAll('.chapter-item').forEach(item => {
                 item.classList.remove('active');
+                // 找到对应的章节项并设置为活动状态
+                if (item.textContent.includes(chapter.id + '.') || item.textContent.includes(chapter.name)) {
+                    item.classList.add('active');
+                }
             });
-            event.target.closest('.chapter-item').classList.add('active');
             
             // 加载内容
             const contentDiv = document.getElementById('contentBody');
@@ -638,8 +641,11 @@
             // 更新活动状态
             document.querySelectorAll('.folder-item').forEach(item => {
                 item.classList.remove('active');
+                // 找到对应的文件夹项并设置为活动状态
+                if (item.textContent.includes(folderName)) {
+                    item.classList.add('active');
+                }
             });
-            event.target.classList.add('active');
             
             const contentDiv = document.getElementById('contentBody');
             contentDiv.innerHTML = '<div class="markdown-body"><div class="loading">加载中...</div></div>';
