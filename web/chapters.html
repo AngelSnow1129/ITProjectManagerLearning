@@ -13,6 +13,11 @@
                 processEscapes: true,
                 processEnvironments: true
             },
+            chtml: {
+                fontURL: null,  // 禁用外部字体加载
+                adaptiveCSS: false
+            },
+            
             options: {
                 skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
                 ignoreHtmlClass: 'tex2jax_ignore',
