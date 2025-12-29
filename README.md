@@ -99,7 +99,18 @@ python -m http.server 8000
 - Netlify
 - Vercel
 
-详细部署指南请查看 [docs/Cloudflare_Pages部署指南.md](docs/Cloudflare_Pages部署指南.md)
+### 快速部署
+
+**Cloudflare Pages（推荐）**：
+1. 连接 GitHub 仓库
+2. 配置构建设置：
+   - Build command: **留空**
+   - Build output directory: `/`
+3. 保存并部署
+
+⚠️ **遇到部署错误？** 查看 [部署错误修复指南](DEPLOYMENT_FIX.md)
+
+📖 **详细教程**：[Cloudflare Pages 完整部署指南](docs/Cloudflare_Pages部署指南.md)
 
 ## 🔧 技术栈
 

@@ -704,3 +704,365 @@ Cloudflare Pages 是部署静态网站的最佳选择：
 ---
 
 **祝部署顺利！** 🚀
+
+
+---
+
+## 🚨 常见部署错误及解决方案
+
+### 错误1：Workers-specific command 错误
+
+**错误信息**：
+```
+✘ [ERROR] It looks like you've run a Workers-specific command in a Pages project.
+For Pages, please run `wrangler pages deploy` instead.
+```
+
+**原因**：
+Cloudflare Pages 的构建设置中配置了错误的部署命令 `npx wrangler deploy`，这是 Workers 的命令，不适用于 Pages 项目。
+
+**解决方案**：
+
+#### 方法1：修改构建设置（推荐）
+
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com)
+2. 进入你的 Pages 项目
+3. 点击 **Settings** → **Builds & deployments**
+4. 找到 **Build configurations** 部分
+5. 修改以下设置：
+
+```yaml
+Framework preset: None
+Build command: (删除或留空)
+Build output directory: /
+Root directory: (留空或 /)
+```
+
+**关键点**：
+- ✅ **Build command 必须留空或删除**
+- ✅ **Build output directory 设置为 `/`**
+- ❌ **不要使用任何 wrangler 命令**
+
+6. 点击 **Save** 保存设置
+7. 返回 **Deployments** 标签
+8. 点击 **Retry deployment** 重新部署
+
+#### 方法2：检查环境变量
+
+确保没有设置以下环境变量：
+- `CF_PAGES_COMMIT_SHA`
+- `CF_PAGES_BRANCH`
+- 任何触发 Workers 部署的变量
+
+#### 方法3：使用正确的 CLI 命令
+
+如果你想使用命令行部署，请使用：
+
+```bash
+# ❌ 错误（Workers 命令）
+npx wrangler deploy
+wrangler deploy
+
+# ✅ 正确（Pages 命令）
+npx wrangler pages deploy .
+wrangler pages deploy .
+```
+
+### 错误2：Build command not found
+
+**错误信息**：
+```
+Error: Command not found: npm
+```
+
+**原因**：
+配置了需要 Node.js 的构建命令，但本项目是纯静态网站。
+
+**解决方案**：
+删除所有构建命令，将 **Build command** 留空。
+
+### 错误3：No build output detected
+
+**错误信息**：
+```
+No build output detected to cache. Skipping.
+```
+
+**说明**：
+这不是错误！这是正常的信息，因为本项目是纯静态网站，无需构建步骤。
+
+**确认**：
+- 确保 **Build output directory** 设置为 `/`
+- 确保 **Build command** 为空
+
+### 错误4：404 Not Found
+
+**现象**：
+部署成功，但访问网站显示 404。
+
+**原因**：
+- 文件路径配置不正确
+- `_redirects` 文件配置有误
+
+**解决方案**：
+
+1. **检查 `_redirects` 文件**：
+```
+# 确保有以下配置
+/  /web/index.html  200
+/*  /web/index.html  404
+```
+
+2. **检查文件结构**：
+```bash
+# 确保以下文件存在
+web/index.html
+web/chapters.html
+web/study.html
+index.html
+```
+
+3. **检查构建输出目录**：
+- 应该设置为 `/`（项目根目录）
+- 不是 `/web` 或其他子目录
+
+### 错误5：CORS 错误
+
+**现象**：
+网站可以访问，但 Markdown 文件加载失败。
+
+**错误信息**：
+```
+Access to fetch at '...' has been blocked by CORS policy
+```
+
+**解决方案**：
+
+1. **添加 `_headers` 文件**：
+```
+/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, OPTIONS
+  Access-Control-Allow-Headers: Content-Type
+```
+
+2. **检查文件路径**：
+- 确保使用相对路径
+- 不要使用 `file://` 协议
+
+### 错误6：图片无法显示
+
+**现象**：
+文字内容正常，但图片显示不出来。
+
+**原因**：
+- 图片文件未上传
+- 图片路径不正确
+
+**解决方案**：
+
+1. **确认图片文件已上传**：
+```bash
+# 检查以下目录
+md/基础知识/*/images/
+md/案例分析/*/images/
+md/搜集资料/*/images/
+```
+
+2. **检查图片路径**：
+- 应该使用相对路径：`images/pic_001.jpg`
+- 不要使用绝对路径：`/images/pic_001.jpg`
+
+3. **检查 `.gitignore`**：
+- 确保图片文件没有被忽略
+- 检查是否有 `*.jpg` 或 `images/` 的忽略规则
+
+### 错误7：MathJax 公式不显示
+
+**现象**：
+公式显示为原始文本，如 `$EV = BAC \times \text{完成百分比}$`
+
+**原因**：
+- MathJax CDN 加载失败
+- 网络连接问题
+
+**解决方案**：
+
+1. **检查网络连接**：
+- 确保可以访问 `cdn.jsdelivr.net`
+- 尝试使用其他 CDN
+
+2. **检查浏览器控制台**：
+- 按 F12 打开开发者工具
+- 查看是否有 MathJax 加载错误
+
+3. **等待加载完成**：
+- MathJax 需要 1-2 秒加载时间
+- 刷新页面重试
+
+### 错误8：部署超时
+
+**错误信息**：
+```
+Error: Deployment timed out
+```
+
+**原因**：
+- 文件太多或太大
+- 网络连接不稳定
+
+**解决方案**：
+
+1. **检查文件大小**：
+```bash
+# 查看项目总大小
+du -sh .
+
+# 查看大文件
+find . -type f -size +10M
+```
+
+2. **优化文件**：
+- 压缩图片
+- 删除不必要的文件
+- 使用 `.gitignore` 排除临时文件
+
+3. **分批部署**：
+- 先部署核心文件
+- 再逐步添加其他内容
+
+---
+
+## 🔍 调试技巧
+
+### 1. 查看部署日志
+
+**步骤**：
+1. 进入 Cloudflare Dashboard
+2. 选择你的 Pages 项目
+3. 点击 **Deployments** 标签
+4. 点击具体的部署
+5. 查看 **Build log**
+
+**关键信息**：
+- 构建命令执行情况
+- 文件上传数量
+- 错误信息
+
+### 2. 使用浏览器开发者工具
+
+**步骤**：
+1. 访问你的网站
+2. 按 F12 打开开发者工具
+3. 查看 **Console** 标签（JavaScript 错误）
+4. 查看 **Network** 标签（资源加载情况）
+
+**常见问题**：
+- 404 错误：文件路径不正确
+- CORS 错误：跨域配置问题
+- 加载超时：文件太大或网络问题
+
+### 3. 测试本地部署
+
+**步骤**：
+```bash
+# 1. 启动本地服务器
+python -m http.server 8000
+# 或
+npx serve .
+
+# 2. 访问本地网站
+http://localhost:8000
+
+# 3. 测试所有功能
+# - 页面加载
+# - 图片显示
+# - Markdown 渲染
+# - 公式显示
+```
+
+如果本地正常，但部署后有问题，通常是配置问题。
+
+### 4. 对比工作版本
+
+**步骤**：
+1. 找到最后一个正常工作的部署
+2. 对比文件差异
+3. 回滚到正常版本
+4. 逐步应用新的更改
+
+### 5. 清除缓存
+
+**步骤**：
+1. 进入 Cloudflare Dashboard
+2. 选择你的 Pages 项目
+3. 点击 **Settings** → **Builds & deployments**
+4. 点击 **Clear build cache**
+5. 重新部署
+
+---
+
+## 📞 获取帮助
+
+如果以上方法都无法解决问题：
+
+### 1. Cloudflare 社区
+
+访问 [Cloudflare 社区](https://community.cloudflare.com/)
+- 搜索类似问题
+- 发布新问题
+- 获取社区帮助
+
+### 2. Cloudflare 支持
+
+- 免费用户：社区支持
+- 付费用户：工单支持
+
+### 3. GitHub Issues
+
+如果是项目本身的问题：
+- 在项目 GitHub 仓库创建 Issue
+- 提供详细的错误信息
+- 附上部署日志
+
+### 4. 文档资源
+
+- [Cloudflare Pages 文档](https://developers.cloudflare.com/pages/)
+- [故障排查指南](https://developers.cloudflare.com/pages/platform/known-issues/)
+- [API 参考](https://developers.cloudflare.com/api/)
+
+---
+
+## ✅ 部署检查清单
+
+在部署前，请确认：
+
+- [ ] 所有文件已提交到 Git 仓库
+- [ ] `.gitignore` 配置正确
+- [ ] `_headers` 文件存在且配置正确
+- [ ] `_redirects` 文件存在且配置正确
+- [ ] 图片文件已上传
+- [ ] Markdown 文件路径正确
+- [ ] 本地测试通过
+- [ ] Build command 为空
+- [ ] Build output directory 为 `/`
+- [ ] 没有配置错误的环境变量
+
+部署后，请验证：
+
+- [ ] 网站可以正常访问
+- [ ] 首页显示正常
+- [ ] 章节列表可以加载
+- [ ] Markdown 内容可以显示
+- [ ] 图片可以正常显示
+- [ ] 数学公式正确渲染
+- [ ] 无 JavaScript 错误
+- [ ] 无 404 错误
+- [ ] 无 CORS 错误
+- [ ] 移动端显示正常
+
+---
+
+**祝部署成功！** 🎉
+
+如果遇到问题，请参考本文档的错误解决方案部分。
