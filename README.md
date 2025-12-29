@@ -21,6 +21,16 @@
 
 ## 🚀 快速开始
 
+### ✅ 完全离线运行
+
+本项目已配置为**完全离线运行**：
+- ✅ 所有 JavaScript 库已下载到本地（Marked.js, MathJax, CSS）
+- ✅ 无需网络连接即可使用
+- ✅ 不受 CDN 故障影响
+- ✅ 加载速度更快
+
+详细说明：[OFFLINE_SETUP_COMPLETE.md](OFFLINE_SETUP_COMPLETE.md)
+
 ### 方法1：使用启动脚本（推荐）
 
 **Windows:**
