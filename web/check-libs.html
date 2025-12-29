@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>库文件检查工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .test-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+        }
+
+        .test-item.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .test-item.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .test-item.warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+
+        .test-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .test-detail {
+            font-size: 0.9em;
+            color: #666;
+            font-family: monospace;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+            cursor: pointer;
+            border: none;
+            font-size: 1em;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .solution {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 5px;
+        }
+
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 库文件检查工具</h1>
+        <p class="subtitle">检测 JavaScript 库文件是否正确加载</p>
+
+        <div id="results"></div>
+
+        <div id="solution" style="display: none;"></div>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="index.html" class="btn">返回首页</a>
+            <button class="btn" onclick="location.reload()">重新检测</button>
+            <a href="diagnose.html" class="btn" style="background: #6c757d;">完整诊断</a>
+        </div>
+    </div>
+
+    <script>
+        const results = document.getElementById('results');
+        const solutionDiv = document.getElementById('solution');
+        let hasErrors = false;
+
+        // 检查访问协议
+        function checkProtocol() {
+            const protocol = window.location.protocol;
+            const item = document.createElement('div');
+            
+            if (protocol === 'file:') {
+                item.className = 'test-item error';
+                item.innerHTML = `
+                    <div class="test-title">❌ 访问协议错误</div>
+                    <div class="test-detail">当前使用: ${protocol} (不支持)</div>
+                    <div class="test-detail">必须使用: http:// 或 https://</div>
+                `;
+                hasErrors = true;
+            } else {
+                item.className = 'test-item success';
+                item.innerHTML = `
+                    <div class="test-title">✅ 访问协议正确</div>
+                    <div class="test-detail">当前使用: ${protocol}</div>
+                `;
+            }
+            
+            results.appendChild(item);
+        }
+
+        // 检查文件内容
+        async function checkFileContent(url, name) {
+            const item = document.createElement('div');
+            
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                // 检查是否是 HTML（错误页面）
+                if (text.trim().startsWith('<')) {
+                    item.className = 'test-item error';
+                    item.innerHTML = `
+                        <div class="test-title">❌ ${name} 加载失败</div>
+                        <div class="test-detail">文件返回了 HTML 而不是 JavaScript</div>
+                        <div class="test-detail">URL: ${url}</div>
+                        <div class="test-detail">响应状态: ${response.status}</div>
+                        <div class="test-detail">内容类型: ${response.headers.get('content-type')}</div>
+                        <div class="test-detail">前100字符: ${text.substring(0, 100)}...</div>
+                    `;
+                    hasErrors = true;
+                } else {
+                    item.className = 'test-item success';
+                    item.innerHTML = `
+                        <div class="test-title">✅ ${name} 正常</div>
+                        <div class="test-detail">文件大小: ${text.length} 字节</div>
+                        <div class="test-detail">内容类型: ${response.headers.get('content-type')}</div>
+                    `;
+                }
+            } catch (error) {
+                item.className = 'test-item error';
+                item.innerHTML = `
+                    <div class="test-title">❌ ${name} 加载异常</div>
+                    <div class="test-detail">错误: ${error.message}</div>
+                    <div class="test-detail">URL: ${url}</div>
+                `;
+                hasErrors = true;
+            }
+            
+            results.appendChild(item);
+        }
+
+        // 检查库是否可用
+        function checkLibraryAvailable(name, checkFn) {
+            const item = document.createElement('div');
+            
+            if (checkFn()) {
+                item.className = 'test-item success';
+                item.innerHTML = `
+                    <div class="test-title">✅ ${name} 可用</div>
+                    <div class="test-detail">库已成功加载到全局作用域</div>
+                `;
+            } else {
+                item.className = 'test-item error';
+                item.innerHTML = `
+                    <div class="test-title">❌ ${name} 不可用</div>
+                    <div class="test-detail">库未加载或加载失败</div>
+                `;
+                hasErrors = true;
+            }
+            
+            results.appendChild(item);
+        }
+
+        // 显示解决方案
+        function showSolution() {
+            if (hasErrors) {
+                solutionDiv.style.display = 'block';
+                
+                if (window.location.protocol === 'file:') {
+                    solutionDiv.innerHTML = `
+                        <h3 style="color: #856404; margin-bottom: 15px;">🚀 解决方案：启动本地服务器</h3>
+                        <p>由于使用了 file:// 协议，必须启动本地服务器。</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Windows 用户：</strong></p>
+                        <div class="code">双击运行项目根目录的 start_server.bat</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Mac/Linux 用户：</strong></p>
+                        <div class="code">./start_server.sh</div>
+                        
+                        <p style="margin-top: 15px;"><strong>或使用 Python：</strong></p>
+                        <div class="code">python -m http.server 8000</div>
+                        
+                        <p style="margin-top: 15px; color: #667eea;">
+                            然后访问：<strong>http://localhost:8000/web/check-libs.html</strong>
+                        </p>
+                    `;
+                } else {
+                    solutionDiv.innerHTML = `
+                        <h3 style="color: #856404; margin-bottom: 15px;">🔧 解决方案</h3>
+                        
+                        <p><strong>1. 清除浏览器缓存</strong></p>
+                        <p style="margin: 10px 0 20px; color: #666;">按 Ctrl+Shift+Delete，清除"缓存的图片和文件"</p>
+                        
+                        <p><strong>2. 重新下载库文件</strong></p>
+                        <div class="code">python download_libs.py</div>
+                        
+                        <p style="margin-top: 15px;"><strong>3. 检查文件完整性</strong></p>
+                        <p style="margin: 10px 0; color: #666;">确认以下文件存在且大小正确：</p>
+                        <ul style="margin-left: 20px; color: #666;">
+                            <li>web/libs/marked.min.js (约 36 KB)</li>
+                            <li>web/libs/github-markdown.min.css (约 23 KB)</li>
+                            <li>web/libs/mathjax/tex-mml-chtml.js (约 1.1 MB)</li>
+                        </ul>
+                        
+                        <p style="margin-top: 15px;"><strong>4. 重启服务器</strong></p>
+                        <p style="margin: 10px 0; color: #666;">停止当前服务器（Ctrl+C），然后重新启动</p>
+                    `;
+                }
+            } else {
+                solutionDiv.style.display = 'block';
+                solutionDiv.className = 'solution';
+                solutionDiv.style.background = '#d4edda';
+                solutionDiv.style.borderLeftColor = '#28a745';
+                solutionDiv.innerHTML = `
+                    <h3 style="color: #155724; margin-bottom: 15px;">✅ 所有检查通过！</h3>
+                    <p>库文件加载正常，可以正常使用学习平台。</p>
+                    <a href="study.html" class="btn" style="margin-top: 15px;">开始学习</a>
+                `;
+            }
+        }
+
+        // 运行所有检测
+        async function runTests() {
+            // 1. 检查协议
+            checkProtocol();
+            
+            // 2. 检查文件内容
+            await checkFileContent('libs/marked.min.js', 'marked.min.js');
+            await checkFileContent('config.js', 'config.js');
+            
+            // 3. 等待一下让库加载
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 4. 检查库是否可用
+            checkLibraryAvailable('Marked.js', () => typeof marked !== 'undefined');
+            checkLibraryAvailable('MathJax', () => typeof MathJax !== 'undefined');
+            checkLibraryAvailable('CONFIG', () => typeof CONFIG !== 'undefined');
+            
+            // 5. 显示解决方案
+            showSolution();
+        }
+
+        // 页面加载后运行
+        window.onload = runTests;
+    </script>
+
+    <!-- 尝试加载库 -->
+    <script src="libs/marked.min.js"></script>
+    <script src="libs/mathjax/tex-mml-chtml.js"></script>
+    <script src="config.js"></script>
+</body>
+</html>

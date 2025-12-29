@@ -514,13 +514,37 @@
                                     <ul style="list-style: none; padding: 0; color: #d9534f;">
                                         ${errors.map(e => `<li>❌ ${e}</li>`).join('')}
                                     </ul>
-                                    <div style="margin-top: 30px;">
-                                        <a href="diagnose.html" style="display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 5px;">
-                                            🔍 运行诊断工具
-                                        </a>
+                                    
+                                    <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 30px auto; max-width: 600px; text-align: left;">
+                                        <h3 style="color: #856404; margin-bottom: 15px;">🔧 可能的原因和解决方案：</h3>
+                                        
+                                        <p style="margin: 10px 0;"><strong>1. 浏览器缓存问题</strong></p>
+                                        <p style="color: #666; margin-left: 20px;">按 <strong>Ctrl+Shift+Delete</strong> 清除缓存，然后刷新页面</p>
+                                        
+                                        <p style="margin: 15px 0 10px;"><strong>2. 文件损坏或缺失</strong></p>
+                                        <p style="color: #666; margin-left: 20px;">运行命令重新下载：</p>
+                                        <div style="background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px; margin: 10px 20px; font-family: monospace;">
+                                            python download_libs.py
+                                        </div>
+                                        
+                                        <p style="margin: 15px 0 10px;"><strong>3. 服务器配置问题</strong></p>
+                                        <p style="color: #666; margin-left: 20px;">重启本地服务器（Ctrl+C 停止，然后重新运行 start_server.bat）</p>
                                     </div>
-                                    <p style="margin-top: 20px; color: #999;">
-                                        请确保使用本地服务器访问，并检查 web/libs/ 文件夹中的文件是否完整
+                                    
+                                    <div style="margin-top: 30px;">
+                                        <a href="check-libs.html" style="display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin: 5px;">
+                                            🔍 检查库文件
+                                        </a>
+                                        <a href="diagnose.html" style="display: inline-block; padding: 12px 24px; background: #6c757d; color: white; text-decoration: none; border-radius: 5px; margin: 5px;">
+                                            🔧 完整诊断
+                                        </a>
+                                        <button onclick="location.reload()" style="display: inline-block; padding: 12px 24px; background: #28a745; color: white; border: none; text-decoration: none; border-radius: 5px; margin: 5px; cursor: pointer;">
+                                            🔄 刷新页面
+                                        </button>
+                                    </div>
+                                    
+                                    <p style="margin-top: 30px; color: #999; font-size: 0.9em;">
+                                        如果问题仍然存在，请查看 <strong>QUICK_FIX_GUIDE.md</strong>
                                     </p>
                                 </div>
                             </div>
