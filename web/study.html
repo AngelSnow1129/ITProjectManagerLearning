@@ -4,6 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>章节学习 - 信息系统项目管理师</title>
+    <!-- MathJax 数学公式渲染 - 必须在 marked 之前加载 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            },
+            startup: {
+                pageReady: () => {
+                    console.log('✅ MathJax 已加载');
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
     <script src="marked-fallback.js"></script>
@@ -516,7 +539,9 @@
             contentDiv.innerHTML = '<div class="markdown-body"><div class="loading">加载中...</div></div>';
             
             try {
-                const filePath = `../md/基础知识/${chapter.folder}/content.md`;
+                // 使用章节配置中的file属性，如果没有则默认为content.md
+                const fileName = chapter.file || 'content.md';
+                const filePath = `../md/基础知识/${chapter.folder}/${fileName}`;
                 const response = await fetch(filePath);
                 
                 if (!response.ok) {
@@ -533,6 +558,18 @@
                 
                 // 修复图片路径
                 fixImagePaths(chapter.folder);
+                
+                // 渲染数学公式
+                if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                    console.log('🔢 开始渲染数学公式...');
+                    MathJax.typesetPromise([contentDiv]).then(() => {
+                        console.log('✅ 数学公式渲染完成');
+                    }).catch((err) => {
+                        console.error('❌ 数学公式渲染失败:', err);
+                    });
+                } else {
+                    console.warn('⚠️ MathJax 未加载');
+                }
                 
                 // 滚动到顶部
                 contentDiv.scrollTop = 0;
@@ -626,6 +663,18 @@
                 
                 // 修复图片路径
                 fixFolderImagePaths(folderPath);
+                
+                // 渲染数学公式
+                if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                    console.log('🔢 开始渲染数学公式...');
+                    MathJax.typesetPromise([contentDiv]).then(() => {
+                        console.log('✅ 数学公式渲染完成');
+                    }).catch((err) => {
+                        console.error('❌ 数学公式渲染失败:', err);
+                    });
+                } else {
+                    console.warn('⚠️ MathJax 未加载');
+                }
                 
                 // 滚动到顶部
                 contentDiv.scrollTop = 0;
