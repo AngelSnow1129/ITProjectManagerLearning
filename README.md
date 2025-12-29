@@ -99,18 +99,31 @@ python -m http.server 8000
 - Netlify
 - Vercel
 
+### 🚨 Cloudflare Pages 部署重要提示
+
+**如果遇到部署错误**：
+```
+✘ [ERROR] It looks like you've run a Workers-specific command in a Pages project.
+```
+
+**必须在 Cloudflare Dashboard 中修改设置**：
+1. 进入项目 Settings → Builds & deployments
+2. **清空 Build command**（不要填写任何命令）
+3. 设置 Build output directory 为 `/`
+4. 保存并重新部署
+
+📖 **详细修复步骤**：[DEPLOYMENT_FIX.md](DEPLOYMENT_FIX.md) ⭐ 必读！
+
 ### 快速部署
 
 **Cloudflare Pages（推荐）**：
 1. 连接 GitHub 仓库
 2. 配置构建设置：
-   - Build command: **留空**
+   - Build command: **留空**（关键！）
    - Build output directory: `/`
 3. 保存并部署
 
-⚠️ **遇到部署错误？** 查看 [部署错误修复指南](DEPLOYMENT_FIX.md)
-
-📖 **详细教程**：[Cloudflare Pages 完整部署指南](docs/Cloudflare_Pages部署指南.md)
+📖 **完整教程**：[Cloudflare Pages 部署指南](docs/Cloudflare_Pages部署指南.md)
 
 ## 🔧 技术栈
 

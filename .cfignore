@@ -1,0 +1,28 @@
+# Cloudflare Pages 部署时忽略的文件
+
+# Python 相关（本项目不需要）
+requirements.txt.backup
+*.pyc
+__pycache__/
+*.py
+
+# Git 相关
+.git/
+.gitignore
+
+# 开发工具
+.vscode/
+.idea/
+
+# 文档（可选，如果想减小部署大小）
+# docs/
+
+# 临时文件
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# 备份文件
+*.backup
+*.bak

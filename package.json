@@ -1,0 +1,22 @@
+{
+  "name": "projectmanager-learning",
+  "version": "1.0.0",
+  "description": "信息系统项目管理师学习平台 - 纯静态网站",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/projectmanager-learning.git"
+  },
+  "keywords": [
+    "project-manager",
+    "learning",
+    "static-site",
+    "education"
+  ],
+  "author": "",
+  "license": "MIT",
+  "private": true
+}
