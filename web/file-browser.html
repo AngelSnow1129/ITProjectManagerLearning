@@ -407,15 +407,35 @@
             const images = document.querySelectorAll('.markdown-body img');
             images.forEach(img => {
                 const src = img.getAttribute('src');
-                if (src && src.startsWith('images/')) {
-                    img.src = `../${currentPath}/${src}`;
+                if (src) {
+                    let newSrc = src;
+                    // 修复以 ./images/ 开头的路径
+                    if (src.startsWith('./images/')) {
+                        newSrc = `../${currentPath}/${src.substring(2)}`;
+                    }
+                    // 修复以 images/ 开头的路径
+                    else if (src.startsWith('images/')) {
+                        newSrc = `../${currentPath}/${src}`;
+                    }
+                    
+                    if (newSrc !== src) {
+                        img.src = newSrc;
+                    }
+                    
+                    // 添加图片加载错误处理
+                    img.onerror = function() {
+                        console.error(`图片加载失败: ${newSrc}`);
+                        this.style.border = '2px dashed #f5576c';
+                        this.style.padding = '20px';
+                        this.alt = `图片加载失败: ${src}`;
+                    };
+                    
+                    // 添加点击查看大图
+                    img.style.cursor = 'pointer';
+                    img.onclick = function() {
+                        window.open(this.src, '_blank');
+                    };
                 }
-                
-                // 添加点击查看大图
-                img.style.cursor = 'pointer';
-                img.onclick = function() {
-                    window.open(this.src, '_blank');
-                };
             });
         }
 

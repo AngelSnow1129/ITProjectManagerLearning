@@ -891,7 +891,7 @@
             if (!chapter) return null;
 
             // 检查是否有特殊映射
-            if (CONFIG.fileMapping[view] && CONFIG.fileMapping[view][chapterId]) {
+            if (CONFIG.fileMapping && CONFIG.fileMapping[view] && CONFIG.fileMapping[view][chapterId]) {
                 return `../keypoint/${CONFIG.fileMapping[view][chapterId]}`;
             }
 
@@ -901,11 +901,16 @@
 
             // 构建文件路径（相对于web目录）
             if (view === 'normal') {
-                return `../${chapterId}_${chapter.name}.md`;
+                // 使用章节配置中的folder和file属性
+                const folder = chapter.folder || `第${chapterId}章-${chapter.name}`;
+                const file = chapter.file || 'content.md';
+                return `../md/基础知识/${folder}/${file}`;
             } else {
                 // 使用altName（如果存在）或原名称
                 const name = chapter.altName || chapter.name;
-                return `../${viewConfig.folder}/${chapterId}_${name}${viewConfig.suffix}.md`;
+                const viewFolder = viewConfig.folder || 'keypoint';
+                const viewSuffix = viewConfig.suffix || '';
+                return `../${viewFolder}/${chapterId}_${name}${viewSuffix}.md`;
             }
         }
 
@@ -1647,6 +1652,11 @@
             const images = contentDiv.querySelectorAll('img');
             console.log(`🖼️ 找到 ${images.length} 个图片`);
             
+            // 获取当前章节的文件夹路径
+            const chapter = chapters[currentExamType].find(c => c.id === currentChapter?.id);
+            const folder = chapter?.folder || `第${currentChapter?.id}章-${currentChapter?.name}`;
+            const basePath = `../md/基础知识/${folder}/`;
+            
             images.forEach((img, index) => {
                 const originalSrc = img.getAttribute('src');
                 if (originalSrc) {
@@ -1654,11 +1664,11 @@
                     
                     // 修复以 ./images/ 开头的路径
                     if (originalSrc.startsWith('./images/')) {
-                        newSrc = '../' + originalSrc.substring(2);
+                        newSrc = basePath + originalSrc.substring(2);
                     }
                     // 修复以 images/ 开头的路径
                     else if (originalSrc.startsWith('images/')) {
-                        newSrc = '../' + originalSrc;
+                        newSrc = basePath + originalSrc;
                     }
                     
                     // 只在前5个图片打印日志
@@ -1675,7 +1685,7 @@
                         errorMsg.style.cssText = 'padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0;';
                         errorMsg.innerHTML = `
                             <strong>⚠️ 图片加载失败</strong><br>
-                            <span style="color: #666; font-size: 0.9em;">路径: ${src}</span>
+                            <span style="color: #666; font-size: 0.9em;">路径: ${newSrc}</span>
                         `;
                         this.parentNode.insertBefore(errorMsg, this);
                     };

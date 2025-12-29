@@ -378,18 +378,27 @@
             const contentDiv = document.querySelector('.markdown-body');
             if (!contentDiv) return;
 
+            // 从文件路径获取基础目录
+            const pathParts = filePath.split('/');
+            pathParts.pop(); // 移除文件名
+            const basePath = pathParts.join('/') + '/';
+
             const images = contentDiv.querySelectorAll('img');
             images.forEach(img => {
                 const src = img.getAttribute('src');
                 if (src) {
+                    let newSrc = src;
+                    
                     // 修复以 ./images/ 开头的路径
                     if (src.startsWith('./images/')) {
-                        img.src = '../' + src.substring(2);
+                        newSrc = basePath + src.substring(2);
                     }
                     // 修复以 images/ 开头的路径
                     else if (src.startsWith('images/')) {
-                        img.src = '../' + src;
+                        newSrc = basePath + src;
                     }
+                    
+                    img.src = newSrc;
                     
                     // 添加图片加载错误处理
                     img.onerror = function() {
@@ -398,7 +407,7 @@
                         errorMsg.style.cssText = 'padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 5px; margin: 20px 0;';
                         errorMsg.innerHTML = `
                             <strong>⚠️ 图片加载失败</strong><br>
-                            <span style="color: #666; font-size: 0.9em;">路径: ${src}</span>
+                            <span style="color: #666; font-size: 0.9em;">路径: ${newSrc}</span>
                         `;
                         this.parentNode.insertBefore(errorMsg, this);
                     };
