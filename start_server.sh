@@ -8,8 +8,8 @@ echo "正在启动本地服务器..."
 echo ""
 
 # 检查Python是否安装
-if command -v python3 &> /dev/null; then
-    echo "使用Python3启动服务器..."
+if command -v python &> /dev/null; then
+    echo "使用python启动服务器..."
     echo "服务器地址: http://localhost:8000"
     echo "主页地址: http://localhost:8000/web/"
     echo ""
@@ -24,7 +24,7 @@ if command -v python3 &> /dev/null; then
         open http://localhost:8000/web/ &
     fi
     
-    python3 -m http.server 8000
+    python -m http.server 8000
 elif command -v python &> /dev/null; then
     echo "使用Python启动服务器..."
     echo "服务器地址: http://localhost:8000"
