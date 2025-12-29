@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文件浏览器 - 信息系统项目管理师</title>
+    <!-- MathJax 数学公式渲染 - 必须在 marked 之前加载 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
     <script src="marked-fallback.js"></script>
@@ -382,6 +397,13 @@
                 
                 // 修复图片路径
                 fixImagePaths();
+                
+                // 渲染数学公式
+                if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                    MathJax.typesetPromise([contentDiv]).catch((err) => {
+                        console.error('数学公式渲染失败:', err);
+                    });
+                }
                 
                 // 滚动到顶部
                 contentDiv.scrollTop = 0;
