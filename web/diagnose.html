@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>诊断工具 - 信息系统项目管理师</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .test-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .test-item {
+            padding: 10px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .solution {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 5px;
+        }
+
+        .solution h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+            cursor: pointer;
+            border: none;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e7f3ff;
+            border-radius: 10px;
+        }
+
+        .summary h2 {
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 系统诊断工具</h1>
+        <p class="subtitle">检测学习平台运行环境</p>
+
+        <div class="test-section">
+            <div class="test-title">📋 基础检测</div>
+            <div class="test-item">
+                <span>访问协议</span>
+                <span class="status loading" id="protocol-status">检测中...</span>
+            </div>
+            <div class="test-item">
+                <span>浏览器类型</span>
+                <span class="status loading" id="browser-status">检测中...</span>
+            </div>
+            <div class="test-item">
+                <span>JavaScript 支持</span>
+                <span class="status success">✅ 正常</span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">📦 库文件检测</div>
+            <div class="test-item">
+                <span>Marked.js (Markdown解析)</span>
+                <span class="status loading" id="marked-status">检测中...</span>
+            </div>
+            <div class="test-item">
+                <span>MathJax (数学公式)</span>
+                <span class="status loading" id="mathjax-status">检测中...</span>
+            </div>
+            <div class="test-item">
+                <span>Config.js (配置文件)</span>
+                <span class="status loading" id="config-status">检测中...</span>
+            </div>
+            <div class="test-item">
+                <span>CSS 样式文件</span>
+                <span class="status loading" id="css-status">检测中...</span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">📁 文件访问测试</div>
+            <div class="test-item">
+                <span>测试章节文件加载</span>
+                <span class="status loading" id="file-status">检测中...</span>
+            </div>
+        </div>
+
+        <div id="solution-container"></div>
+
+        <div class="summary" id="summary" style="display: none;">
+            <h2>📊 诊断结果</h2>
+            <div id="summary-content"></div>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="index.html" class="btn">返回首页</a>
+            <button class="btn" onclick="location.reload()">重新检测</button>
+        </div>
+    </div>
+
+    <script src="libs/marked.min.js"></script>
+    <script src="libs/mathjax/tex-mml-chtml.js"></script>
+    <script src="config.js"></script>
+
+    <script>
+        let issues = [];
+        let allPassed = true;
+
+        // 检测访问协议
+        function checkProtocol() {
+            const protocol = window.location.protocol;
+            const status = document.getElementById('protocol-status');
+            
+            if (protocol === 'file:') {
+                status.className = 'status error';
+                status.textContent = '❌ file:// 协议';
+                issues.push({
+                    title: '使用了 file:// 协议',
+                    description: '直接打开 HTML 文件会导致无法加载学习内容',
+                    solution: 'start-server'
+                });
+                allPassed = false;
+            } else if (protocol === 'http:' || protocol === 'https:') {
+                status.className = 'status success';
+                status.textContent = '✅ ' + protocol;
+            } else {
+                status.className = 'status warning';
+                status.textContent = '⚠️ ' + protocol;
+            }
+        }
+
+        // 检测浏览器
+        function checkBrowser() {
+            const status = document.getElementById('browser-status');
+            const ua = navigator.userAgent;
+            let browser = '未知';
+            
+            if (ua.indexOf('Chrome') > -1) browser = 'Chrome';
+            else if (ua.indexOf('Firefox') > -1) browser = 'Firefox';
+            else if (ua.indexOf('Safari') > -1) browser = 'Safari';
+            else if (ua.indexOf('Edge') > -1) browser = 'Edge';
+            
+            status.className = 'status success';
+            status.textContent = '✅ ' + browser;
+        }
+
+        // 检测 Marked.js
+        function checkMarked() {
+            const status = document.getElementById('marked-status');
+            
+            setTimeout(() => {
+                if (typeof marked !== 'undefined') {
+                    status.className = 'status success';
+                    status.textContent = '✅ 已加载';
+                } else {
+                    status.className = 'status error';
+                    status.textContent = '❌ 未加载';
+                    issues.push({
+                        title: 'Marked.js 未加载',
+                        description: 'Markdown 解析库加载失败',
+                        solution: 'check-files'
+                    });
+                    allPassed = false;
+                }
+            }, 1000);
+        }
+
+        // 检测 MathJax
+        function checkMathJax() {
+            const status = document.getElementById('mathjax-status');
+            
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined') {
+                    status.className = 'status success';
+                    status.textContent = '✅ 已加载';
+                } else {
+                    status.className = 'status error';
+                    status.textContent = '❌ 未加载';
+                    issues.push({
+                        title: 'MathJax 未加载',
+                        description: '数学公式渲染库加载失败',
+                        solution: 'check-files'
+                    });
+                    allPassed = false;
+                }
+            }, 1000);
+        }
+
+        // 检测 Config.js
+        function checkConfig() {
+            const status = document.getElementById('config-status');
+            
+            setTimeout(() => {
+                if (typeof CONFIG !== 'undefined') {
+                    status.className = 'status success';
+                    status.textContent = '✅ 已加载';
+                } else {
+                    status.className = 'status error';
+                    status.textContent = '❌ 未加载';
+                    issues.push({
+                        title: 'Config.js 未加载',
+                        description: '配置文件加载失败',
+                        solution: 'check-files'
+                    });
+                    allPassed = false;
+                }
+            }, 500);
+        }
+
+        // 检测 CSS
+        function checkCSS() {
+            const status = document.getElementById('css-status');
+            status.className = 'status success';
+            status.textContent = '✅ 已加载';
+        }
+
+        // 测试文件访问
+        async function checkFileAccess() {
+            const status = document.getElementById('file-status');
+            
+            try {
+                const response = await fetch('../md/基础知识/第01章-信息化发展/content.md');
+                if (response.ok) {
+                    status.className = 'status success';
+                    status.textContent = '✅ 可以访问';
+                } else {
+                    status.className = 'status error';
+                    status.textContent = '❌ 无法访问 (' + response.status + ')';
+                    issues.push({
+                        title: '无法访问章节文件',
+                        description: '文件访问失败，状态码: ' + response.status,
+                        solution: 'start-server'
+                    });
+                    allPassed = false;
+                }
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = '❌ 访问失败';
+                issues.push({
+                    title: '文件访问异常',
+                    description: error.message,
+                    solution: 'start-server'
+                });
+                allPassed = false;
+            }
+        }
+
+        // 显示解决方案
+        function showSolutions() {
+            setTimeout(() => {
+                const container = document.getElementById('solution-container');
+                const summary = document.getElementById('summary');
+                const summaryContent = document.getElementById('summary-content');
+                
+                if (issues.length > 0) {
+                    let html = '';
+                    
+                    // 按解决方案类型分组
+                    const needServer = issues.some(i => i.solution === 'start-server');
+                    const needFiles = issues.some(i => i.solution === 'check-files');
+                    
+                    if (needServer) {
+                        html += `
+                            <div class="solution">
+                                <h3>🚀 需要启动本地服务器</h3>
+                                <p>由于浏览器安全限制，必须通过本地服务器访问学习内容。</p>
+                                
+                                <p><strong>Windows 用户：</strong></p>
+                                <div class="code">双击运行项目根目录的 start_server.bat</div>
+                                
+                                <p><strong>Mac/Linux 用户：</strong></p>
+                                <div class="code">./start_server.sh</div>
+                                
+                                <p><strong>或使用 Python：</strong></p>
+                                <div class="code">python -m http.server 8000</div>
+                                
+                                <p style="margin-top: 15px; color: #667eea;">
+                                    然后访问：<strong>http://localhost:8000/web/study.html</strong>
+                                </p>
+                            </div>
+                        `;
+                    }
+                    
+                    if (needFiles) {
+                        html += `
+                            <div class="solution">
+                                <h3>📦 检查库文件</h3>
+                                <p>某些必需的库文件未加载，请检查以下文件是否存在：</p>
+                                <ul style="margin: 10px 0; padding-left: 20px;">
+                                    <li>web/libs/marked.min.js</li>
+                                    <li>web/libs/mathjax/tex-mml-chtml.js</li>
+                                    <li>web/libs/github-markdown.min.css</li>
+                                    <li>web/config.js</li>
+                                </ul>
+                                <p>如果文件缺失，请运行：</p>
+                                <div class="code">python download_libs.py</div>
+                            </div>
+                        `;
+                    }
+                    
+                    container.innerHTML = html;
+                    
+                    // 显示摘要
+                    summaryContent.innerHTML = `
+                        <p style="color: #d9534f; font-size: 1.1em; margin-bottom: 10px;">
+                            ❌ 发现 ${issues.length} 个问题
+                        </p>
+                        <ul style="padding-left: 20px;">
+                            ${issues.map(i => `<li>${i.title}</li>`).join('')}
+                        </ul>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="solution" style="background: #d4edda; border-left-color: #28a745;">
+                            <h3 style="color: #155724;">✅ 所有检测通过！</h3>
+                            <p>您的环境配置正确，可以正常使用学习平台。</p>
+                            <a href="study.html" class="btn">开始学习</a>
+                        </div>
+                    `;
+                    
+                    summaryContent.innerHTML = `
+                        <p style="color: #28a745; font-size: 1.1em;">
+                            ✅ 所有检测项通过，环境配置正确！
+                        </p>
+                    `;
+                }
+                
+                summary.style.display = 'block';
+            }, 2000);
+        }
+
+        // 运行所有检测
+        window.onload = function() {
+            checkProtocol();
+            checkBrowser();
+            checkMarked();
+            checkMathJax();
+            checkConfig();
+            checkCSS();
+            checkFileAccess();
+            showSolutions();
+        };
+    </script>
+</body>
+</html>

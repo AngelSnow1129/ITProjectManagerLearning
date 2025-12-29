@@ -427,6 +427,109 @@
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
 
     <script>
+        // 早期检测：检查是否使用 file:// 协议
+        (function() {
+            if (window.location.protocol === 'file:') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    const contentBody = document.getElementById('contentBody');
+                    if (contentBody) {
+                        contentBody.innerHTML = `
+                            <div class="markdown-body">
+                                <div style="text-align: center; padding: 50px 20px;">
+                                    <h2 style="color: #f5576c; margin-bottom: 20px;">⚠️ 需要启动本地服务器</h2>
+                                    <p style="color: #666; margin-bottom: 30px; font-size: 1.1em;">
+                                        由于浏览器安全限制，直接打开 HTML 文件无法加载学习内容。
+                                    </p>
+                                    <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; text-align: left; max-width: 700px; margin: 0 auto;">
+                                        <h3 style="color: #333; margin-bottom: 20px;">📝 解决方法：</h3>
+                                        
+                                        <div style="margin: 20px 0;">
+                                            <p style="font-weight: bold; margin-bottom: 10px;">Windows 用户：</p>
+                                            <div style="background: white; padding: 15px; border-radius: 5px; font-family: monospace; border-left: 4px solid #667eea;">
+                                                双击运行项目根目录的 <strong style="color: #667eea;">start_server.bat</strong>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="margin: 20px 0;">
+                                            <p style="font-weight: bold; margin-bottom: 10px;">Mac/Linux 用户：</p>
+                                            <div style="background: white; padding: 15px; border-radius: 5px; font-family: monospace; border-left: 4px solid #667eea;">
+                                                在终端运行：<strong style="color: #667eea;">./start_server.sh</strong>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="margin: 20px 0;">
+                                            <p style="font-weight: bold; margin-bottom: 10px;">或使用 Python：</p>
+                                            <div style="background: white; padding: 15px; border-radius: 5px; font-family: monospace; border-left: 4px solid #667eea;">
+                                                python -m http.server 8000
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="margin-top: 25px; padding: 15px; background: #e7f3ff; border-radius: 5px;">
+                                            <p style="color: #0066cc; margin: 0;">
+                                                <strong>然后访问：</strong><br>
+                                                <span style="font-family: monospace; font-size: 1.1em;">http://localhost:8000/web/study.html</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="margin-top: 30px;">
+                                        <a href="diagnose.html" style="display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin: 5px;">
+                                            🔍 运行诊断工具
+                                        </a>
+                                        <a href="../docs/离线学习指南.md" style="display: inline-block; padding: 12px 24px; background: #6c757d; color: white; text-decoration: none; border-radius: 5px; margin: 5px;">
+                                            📚 查看详细文档
+                                        </a>
+                                    </div>
+                                    
+                                    <p style="margin-top: 30px; color: #999; font-size: 0.9em;">
+                                        详细说明请查看项目根目录的 <strong>docs/离线学习指南.md</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                return; // 停止后续脚本执行
+            }
+            
+            // 检查必需的库是否加载
+            setTimeout(function() {
+                const errors = [];
+                if (typeof marked === 'undefined') {
+                    errors.push('Marked.js 未加载');
+                }
+                if (typeof CONFIG === 'undefined') {
+                    errors.push('Config.js 未加载');
+                }
+                
+                if (errors.length > 0) {
+                    console.error('❌ 库加载失败:', errors);
+                    const contentBody = document.getElementById('contentBody');
+                    if (contentBody) {
+                        contentBody.innerHTML = `
+                            <div class="markdown-body">
+                                <div style="text-align: center; padding: 50px 20px;">
+                                    <h2 style="color: #f5576c;">😕 库文件加载失败</h2>
+                                    <p style="color: #666; margin: 20px 0;">以下库文件未能正确加载：</p>
+                                    <ul style="list-style: none; padding: 0; color: #d9534f;">
+                                        ${errors.map(e => `<li>❌ ${e}</li>`).join('')}
+                                    </ul>
+                                    <div style="margin-top: 30px;">
+                                        <a href="diagnose.html" style="display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 5px;">
+                                            🔍 运行诊断工具
+                                        </a>
+                                    </div>
+                                    <p style="margin-top: 20px; color: #999;">
+                                        请确保使用本地服务器访问，并检查 web/libs/ 文件夹中的文件是否完整
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            }, 2000);
+        })();
+        
         let currentView = 'normal';
         let currentChapter = null;
         let completedChapters = JSON.parse(localStorage.getItem('completedChapters') || '[]');
