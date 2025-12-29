@@ -144,3 +144,28 @@ python -m http.server 8000
 ---
 
 **祝您考试顺利！通过信息系统项目管理师考试！** 🎓💪
+
+
+## 🧹 项目优化
+
+### 图片清理（2025-12-29）
+
+已完成图片清理优化：
+- ✅ 删除了 797 个未使用的图片
+- ✅ 节省了约 40 MB 存储空间
+- ✅ 图片使用率从 52.8% 提升到 100%
+- ✅ 优化了部署速度
+
+详细报告：[IMAGE_CLEANUP_SUMMARY.md](IMAGE_CLEANUP_SUMMARY.md)
+
+### 清理工具
+
+项目包含两个图片清理脚本：
+
+```bash
+# 分析并交互式删除未使用的图片
+python cleanup_unused_images.py
+
+# 自动删除未使用的图片（无需确认）
+python auto_cleanup_images.py
+```
